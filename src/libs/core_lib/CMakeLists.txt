@@ -8,6 +8,5 @@ target_include_directories (${TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
   ${TARGET}
   PRIVATE project_options
-          CONAN_PKG::docopt.cpp
           CONAN_PKG::fmt
           CONAN_PKG::spdlog)
