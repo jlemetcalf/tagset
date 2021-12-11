@@ -9,7 +9,8 @@ add_library(catch_main STATIC catch_main.cpp)
 target_link_libraries(catch_main PUBLIC CONAN_PKG::catch2)
 target_link_libraries(catch_main PRIVATE project_options)
 
-add_executable(tests string_cache_tests.cpp tag_tests.cpp)
+file(GLOB_RECURSE _SRC_TESTS "*_tests.cpp")
+add_executable(tests ${_SRC_TESTS})
 target_link_libraries(tests PRIVATE project_warnings project_options CONAN_PKG::fmt catch_main core_lib)
 
 # automatically discover tests that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
