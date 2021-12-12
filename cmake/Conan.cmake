@@ -21,12 +21,7 @@ macro(run_conan)
     fmt/6.2.0
     spdlog/1.5.0
     boost/1.76.0
-    openssl/1.1.1k
-    nlohmann_json/3.9.0
-    grpc/1.38.0
-    protobuf/3.17.1
-    abseil/20210324.1
-    wt/4.5.0
+    benchmark/1.6.0
     OPTIONS
     ${CONAN_EXTRA_OPTIONS}
     BASIC_SETUP

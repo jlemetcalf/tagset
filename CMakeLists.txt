@@ -39,6 +39,7 @@ include(cmake/StaticAnalyzers.cmake)
 
 option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
 option(ENABLE_TESTING "Enable Test Builds" ON)
+option(ENABLE_BENCHMARKS "Enable Benchmark Builds" ON)
 option(ENABLE_FUZZING "Enable Fuzzing Builds" OFF)
 
 # Very basic PCH example
@@ -67,6 +68,11 @@ if(ENABLE_TESTING)
   enable_testing()
   message("Building Tests. Be sure to check out test/constexpr_tests for constexpr testing")
   add_subdirectory(test)
+endif()
+
+if(ENABLE_BENCHMARKS)
+  message("Building Benchmarks.")
+  add_subdirectory(benchmark)
 endif()
 
 if(ENABLE_FUZZING)
