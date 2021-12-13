@@ -27,7 +27,7 @@ std::string gen_random(const std::size_t len)
 class EntityStoreFixture : public benchmark::Fixture 
 {
 public:
-  void SetUp(const ::benchmark::State& /*state*/) 
+  void SetUp(const ::benchmark::State& /*state*/) override
   {
     u_int64_t count = 100000;
     std::size_t tags = 10;
@@ -44,7 +44,8 @@ public:
     }
   }
 
-  void TearDown(const ::benchmark::State& /*state*/) {
+  void TearDown(const ::benchmark::State& /*state*/) override
+  {
   }
 
   core::TagFactory mTagFactory;
