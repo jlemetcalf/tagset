@@ -53,6 +53,23 @@ public:
     return std::nullopt;
   }
 
+  std::vector<TEntityIdType> FindEntities(const TagSet& tagSet)
+  {
+    std::vector<TEntityIdType> entities;
+    std::for_each(mEntities.begin(), mEntities.end(), [&entities, &tagSet](const auto& pair) {
+      auto checkTag = [&pair](const auto& tag) {
+        const auto It = pair.second.find(tag);
+        return It != pair.second.end();
+      };
+      if (std::all_of(tagSet.begin(), tagSet.end(), checkTag))
+      {
+        entities.push_back(pair.first);
+      }
+    });
+    return entities;
+  }
+
+
 protected:
 
 private:

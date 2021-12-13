@@ -29,7 +29,7 @@ class EntityStoreFixture : public benchmark::Fixture
 public:
   void SetUp(const ::benchmark::State& /*state*/) 
   {
-    u_int64_t count = 1000;
+    u_int64_t count = 100000;
     std::size_t tags = 10;
     while (count > 0)
     {
@@ -62,14 +62,13 @@ BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state)
   }
 }
 
-BENCHMARK_F(EntityStoreFixture, LookupTest2)(benchmark::State& state) 
+BENCHMARK_F(EntityStoreFixture, FindEntitiesTest)(benchmark::State& state) 
 {
+  const auto tags = mStore.GetTags(1);
   for (auto _ : state) 
   {
     // This code gets timed
-    const auto storedTagSetOptional = mStore.GetTags(1);
-    const auto& storedTagSet = storedTagSetOptional->get();
-    [[maybe_unused]] const auto size = storedTagSet.size();
+    const auto entities1 = mStore.FindEntities(tags->get());
   }
 }
 
