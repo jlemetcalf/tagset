@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 #include "tag.hpp"
 #include "string_cache.hpp"
