@@ -11,12 +11,13 @@ install:
 
 jobs:
   include:
-    - os: osx
-      compiler: gcc
-      osx_image: xcode11.3    # includes gcc-9 by default
-      env:
-        - GCC_VER="9"
-        - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
+    # 20220111 - Issue with gcc on osx not compiling certain packages.
+    # - os: osx
+    #   compiler: gcc
+    #   osx_image: xcode11.3    # includes gcc-9 by default
+    #   env:
+    #     - GCC_VER="9"
+    #     - MATRIX_EVAL="CC=gcc-${GCC_VER} && CXX=g++-${GCC_VER}"
     - os: osx
       compiler: clang
       osx_image: xcode11.2
