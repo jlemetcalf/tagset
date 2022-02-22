@@ -1,4 +1,4 @@
-set(TARGET core_lib)
+set(TARGET tag_lib)
 file(GLOB_RECURSE _HDRS "*.hpp")
 file(GLOB_RECURSE _SRCS "*.[hc]pp")
 

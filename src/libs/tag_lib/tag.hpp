@@ -41,7 +41,7 @@ struct TagHash
     {
         std::size_t h1 = std::hash<std::string>{}(tag.Name());
         std::size_t h2 = std::hash<std::string>{}(tag.Value());
-        return h1 ^ (h2 << 1); // or use boost::hash_combine
+        return h1 ^ (h2 << 1);
     }
 };
 

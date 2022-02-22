@@ -1,1 +1,1 @@
-add_subdirectory(core_lib)
+add_subdirectory(tag_lib)
