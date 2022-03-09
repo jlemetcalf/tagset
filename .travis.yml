@@ -41,7 +41,7 @@ jobs:
             - doxygen
             - python3-pip
       after_script:
-        - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER}
+        - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-${GCC_VER} -t ${{ secrets.CODECOV_TOKEN }}
     - os: linux
       dist: bionic
       compiler: clang
