@@ -4,6 +4,9 @@
 #include <ctime>
 #include <iostream>
 #include <unistd.h>
+#include <memory>
+
+#include <fmt/core.h>
 
 #include "entity_store.hpp"
 #include "tag_factory.hpp"
@@ -29,17 +32,20 @@ class EntityStoreFixture : public benchmark::Fixture
 public:
   void SetUp(const ::benchmark::State& /*state*/) override
   {
-    u_int64_t count = 100000;
+    mTagFactory = std::make_unique<core::TagFactory>();
+    mStore = std::make_unique<core::EntityStore<u_int64_t>>(*mTagFactory.get());
+    //u_int64_t count = 100000;
+    u_int64_t count = 100;
     std::size_t tags = 10;
     while (count > 0)
     {
-        core::EntityStore<u_int64_t>::TagSet tagSet;
+        core::TagSet tagSet;
         for (std::size_t idx = 0; idx < tags; idx++)
         {
-          auto tag1 = mTagFactory.CreateTag(gen_random(20), gen_random(20));
+          auto tag1 = mTagFactory->CreateTag(gen_random(20), gen_random(20));
           tagSet.insert(tag1);
         }
-        mStore.Add(count, tagSet );
+        mStore->Add(count, tagSet );
         count--;
     }
   }
@@ -48,8 +54,8 @@ public:
   {
   }
 
-  core::TagFactory mTagFactory;
-  core::EntityStore<u_int64_t> mStore;
+  std::unique_ptr<core::TagFactory> mTagFactory;
+  std::unique_ptr<core::EntityStore<u_int64_t>> mStore;
 };
 
 BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state) 
@@ -57,7 +63,7 @@ BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state)
   for (auto _ : state) 
   {
     // This code gets timed
-    const auto storedTagSetOptional = mStore.GetTags(1);
+    const auto storedTagSetOptional = mStore->GetTags(1);
     const auto& storedTagSet = storedTagSetOptional->get();
     [[maybe_unused]] const auto size = storedTagSet.size();
   }
@@ -65,11 +71,30 @@ BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state)
 
 BENCHMARK_F(EntityStoreFixture, FindEntitiesTest)(benchmark::State& state) 
 {
-  const auto tags = mStore.GetTags(1);
+  const auto tags = mStore->GetTags(1);
   for (auto _ : state) 
   {
     // This code gets timed
-    const auto entities1 = mStore.FindEntities(tags->get());
+    const auto entities1 = mStore->FindEntities(tags->get());
+  }
+}
+
+BENCHMARK_F(EntityStoreFixture, DerivedTagGenerationTest)(benchmark::State& state) 
+{
+  const auto tagSetOptional = mStore->GetTags(1);
+  const auto& tagSet = tagSetOptional->get();
+  const auto firstTagName = tagSet.begin()->Name();
+  const auto firstTagValue = tagSet.begin()->Value();
+  const auto derivedTagExpression = fmt::format("{} == \"{}\"", firstTagName, firstTagValue);
+  core::TagSet derivedTagSet;
+  core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", derivedTagExpression};
+  auto tagThatHasBeenDerived = mTagFactory->CreateTag("DerivedTagName1", "DerivedTagValue1");
+  derivedTagSet.insert(tagThatHasBeenDerived);
+  for (auto _ : state) 
+  {
+    // This code gets timed
+    mStore->AddDerivedTagDefinition(std::move(derivedTagDefinition));
+    const auto entities1 = mStore->FindEntities(derivedTagSet);
   }
 }
 

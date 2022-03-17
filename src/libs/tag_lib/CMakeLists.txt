@@ -9,4 +9,6 @@ target_link_libraries(
   ${TARGET}
   PRIVATE project_options
           CONAN_PKG::fmt
-          CONAN_PKG::spdlog)
+          CONAN_PKG::spdlog
+          CONAN_PKG::ctpg
+          CONAN_PKG::chaiscript)

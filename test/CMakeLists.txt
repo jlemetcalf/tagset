@@ -11,7 +11,7 @@ target_link_libraries(catch_main PRIVATE project_options)
 
 file(GLOB_RECURSE _SRC_TESTS "*_tests.cpp")
 add_executable(tests ${_SRC_TESTS})
-target_link_libraries(tests PRIVATE project_warnings project_options CONAN_PKG::fmt catch_main tag_lib)
+target_link_libraries(tests PRIVATE project_warnings project_options CONAN_PKG::fmt CONAN_PKG::ctpg CONAN_PKG::chaiscript catch_main tag_lib)
 
 # automatically discover tests that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
 # to whatever you want, or use different for different binaries
