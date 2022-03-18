@@ -21,8 +21,6 @@ macro(run_conan)
     fmt/6.2.0
     spdlog/1.5.0
     benchmark/1.6.0
-    ctpg/1.3.7
-    chaiscript/6.1.0
     OPTIONS
     ${CONAN_EXTRA_OPTIONS}
     BASIC_SETUP

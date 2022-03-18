@@ -10,6 +10,7 @@
 
 #include "entity_store.hpp"
 #include "tag_factory.hpp"
+#include "utils.hpp"
 
 std::string gen_random(const std::size_t len) 
 {
@@ -34,15 +35,14 @@ public:
   {
     mTagFactory = std::make_unique<core::TagFactory>();
     mStore = std::make_unique<core::EntityStore<u_int64_t>>(*mTagFactory.get());
-    //u_int64_t count = 100000;
-    u_int64_t count = 100;
+    u_int64_t count = 100000;
     std::size_t tags = 10;
     while (count > 0)
     {
         core::TagSet tagSet;
         for (std::size_t idx = 0; idx < tags; idx++)
         {
-          auto tag1 = mTagFactory->CreateTag(gen_random(20), gen_random(20));
+          auto tag1 = mTagFactory->CreateTag(std::string("Tag") + gen_random(20), std::string("Value") + gen_random(20));
           tagSet.insert(tag1);
         }
         mStore->Add(count, tagSet );
@@ -85,16 +85,15 @@ BENCHMARK_F(EntityStoreFixture, DerivedTagGenerationTest)(benchmark::State& stat
   const auto& tagSet = tagSetOptional->get();
   const auto firstTagName = tagSet.begin()->Name();
   const auto firstTagValue = tagSet.begin()->Value();
-  const auto derivedTagExpression = fmt::format("{} == \"{}\"", firstTagName, firstTagValue);
+  const auto includedTagSet = core::GenerateTagSet(*mTagFactory, {{firstTagName, firstTagValue}});
   core::TagSet derivedTagSet;
-  core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", derivedTagExpression};
   auto tagThatHasBeenDerived = mTagFactory->CreateTag("DerivedTagName1", "DerivedTagValue1");
   derivedTagSet.insert(tagThatHasBeenDerived);
   for (auto _ : state) 
   {
     // This code gets timed
+    core::DerivedTagDefinition derivedTagDefinition{"DerivedTagName1", "DerivedTagValue1", includedTagSet, {}};
     mStore->AddDerivedTagDefinition(std::move(derivedTagDefinition));
-    const auto entities1 = mStore->FindEntities(derivedTagSet);
   }
 }
 

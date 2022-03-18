@@ -7,6 +7,7 @@
 
 #include "tag_factory.hpp"
 #include "entity_store.hpp"
+#include "utils.hpp"
 
 TEST_CASE("Entity Store Simple Load")
 {
@@ -25,24 +26,13 @@ TEST_CASE("Entity Store Simple Load")
   REQUIRE("TagValue1" == storedTagSet.begin()->Value());
 }
 
-core::TagSet GenerateTagSet(core::TagFactory& tagFactory, std::initializer_list<std::pair<std::string, std::string>> tagNameValuePairs)
-{
-  core::TagSet tagSet;
-  for( auto tagNameValuePair : tagNameValuePairs )
-  {
-    auto tag = tagFactory.CreateTag(tagNameValuePair.first, tagNameValuePair.second);
-    tagSet.insert(tag);
-  }
-  return tagSet;
-}
-
 TEST_CASE("Entity Store Lookup")
 {
   core::TagFactory tagFactory;
   core::EntityStore<u_int64_t> store{ tagFactory };
 
-  auto tagSet1 = GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
-  auto tagSet2 = GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
+  auto tagSet1 = core::GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
+  auto tagSet2 = core::GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
 
   store.Add(1, tagSet1 );
   store.Add(2, tagSet1 );
@@ -101,11 +91,12 @@ TEST_CASE("Entity Store Lookup for derived tag")
   core::TagFactory tagFactory;
   core::EntityStore<u_int64_t> store{ tagFactory };
 
-  core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", "TagName1 == \"TagValue1\""};
+  const auto includedTagSet = core::GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}});
+  core::DerivedTagDefinition derivedTagDefinition{"DerivedTagName1", "DerivedTagValue1", includedTagSet, {}};
   store.AddDerivedTagDefinition(std::move(derivedTagDefinition));
 
-  auto tagSet1 = GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
-  auto tagSet2 = GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
+  auto tagSet1 = core::GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
+  auto tagSet2 = core::GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
 
   store.Add(1, tagSet1 );
   store.Add(2, tagSet1 );
@@ -126,11 +117,12 @@ TEST_CASE("Entity Store Lookup for derived tag and then remove")
   core::TagFactory tagFactory;
   core::EntityStore<u_int64_t> store{ tagFactory };
 
-  core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", "TagName1 == \"TagValue1\""};
+  const auto includedTagSet = core::GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}});
+  core::DerivedTagDefinition derivedTagDefinition{"DerivedTagName1", "DerivedTagValue1", includedTagSet, {}};
   store.AddDerivedTagDefinition(std::move(derivedTagDefinition));
 
-  auto tagSet1 = GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
-  auto tagSet2 = GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
+  auto tagSet1 = core::GenerateTagSet(tagFactory, {{"TagName1", "TagValue1"}, {"TagName2", "TagValue2"}});
+  auto tagSet2 = core::GenerateTagSet(tagFactory, {{"TagName3", "TagValue3"}, {"TagName4", "TagValue4"}});
 
   store.Add(1, tagSet1 );
   store.Add(2, tagSet1 );

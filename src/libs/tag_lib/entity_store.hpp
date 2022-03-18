@@ -66,7 +66,7 @@ public:
     core::TagSet tagSet;
     tagSet.insert(tag);
     std::for_each(mEntities.begin(), mEntities.end(), [&](auto& entityPair) {
-      if (DerivedTagMatcher::Match(derivedTagDefinition.MatchingExpression(), entityPair.second, mTagFactory.GetUniqueTagNames()))
+      if (DerivedTagMatcher::Match(derivedTagDefinition, entityPair.second))
       {
         AddTagsInternal(entityPair.first, tagSet, false);
       }
@@ -99,7 +99,7 @@ public:
         auto tag = mTagFactory.CreateTag(mDerivedTagDefinition.Name(), mDerivedTagDefinition.Value());
         core::TagSet derivedTagSet;
         derivedTagSet.insert(tag);
-        if (DerivedTagMatcher::Match(mDerivedTagDefinition.MatchingExpression(), *tagset, mTagFactory.GetUniqueTagNames()))
+        if (DerivedTagMatcher::Match(mDerivedTagDefinition, *tagset))
         {
           AddTagsInternal(entityId, derivedTagSet, false);
         }

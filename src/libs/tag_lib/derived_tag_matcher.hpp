@@ -6,71 +6,28 @@
 #include <sstream>
 #include <variant>
 
-#define CHAISCRIPT_NO_THREADS
-#include <chaiscript/chaiscript.hpp>
-
 #include "tag.hpp"
+#include "derived_tag_definition.hpp"
 
 namespace core {
 
 class DerivedTagMatcher
 {
 public:
-  DerivedTagMatcher() = default;
+  DerivedTagMatcher() = delete;
 
-  static bool Match(const std::string& chaiScript, const TagSet& tagset, const std::unordered_set<std::string> uniqueTagNames)
+  static bool Match(const DerivedTagDefinition& derivedTagDefinition, const TagSet& tagset)
   {
-    DerivedTagMatcher matcher;
-    matcher.Init(uniqueTagNames);
-    return matcher.Match(chaiScript, tagset);
-  }
-  // static bool Match(const std::string& chaiScript, const TagSet& tagset, const std::unordered_set<std::string> uniqueTagNames)
-  // {
-  //   chaiscript::ChaiScript chai;
-
-  //   // Add in all unique tags as blank to cover missing tags causing exception
-  //   std::for_each(uniqueTagNames.begin(), uniqueTagNames.end(), [&chai](const auto& tagName) 
-  //   { 
-  //     chai.add(chaiscript::var(std::string("")), tagName);  
-  //   });
-
-  //   // Add in all tags
-  //   std::for_each(tagset.begin(), tagset.end(), [&chai](const auto& tag) 
-  //   { 
-  //     chai.add(chaiscript::var(tag.Value()), tag.Name());  
-  //   });
-
-  //   return chai.eval<bool>(chaiScript);
-  // }
-
-  void Init(const std::unordered_set<std::string> uniqueTagNames)
-  {
-    mChai = std::make_unique<chaiscript::ChaiScript>();
-    // Add in all unique tags as blank to cover missing tags causing exception
-    std::for_each(uniqueTagNames.begin(), uniqueTagNames.end(), [&](const auto& tagName) 
-    { 
-      mChai->add_global(chaiscript::var(std::string("")), tagName);  
+    const auto& includedTags = derivedTagDefinition.IncludedTags();
+    const bool foundAllIncludedTags = std::all_of(includedTags.begin(), includedTags.end(), [&tagset](const auto tag){
+      return tagset.find(tag) != tagset.end();
     });
-  }
-
-  bool Match(const std::string& chaiScript, const TagSet& tagset)
-  {
-    const auto state = mChai->get_state();
-
-    // Add in all tags
-    std::for_each(tagset.begin(), tagset.end(), [&](const auto& tag) 
-    { 
-      mChai->add(chaiscript::var(tag.Value()), tag.Name());  
+    const auto& excludedTags = derivedTagDefinition.ExcludedTags();
+    const bool foundAnyExcludedTags = std::any_of(excludedTags.begin(), excludedTags.end(), [&tagset](const auto tag){
+      return tagset.find(tag) != tagset.end();
     });
-
-    const auto result = mChai->eval<bool>(chaiScript);
-
-    mChai->set_state(state);
-
-    return result;
+    return foundAllIncludedTags && !foundAnyExcludedTags;
   }
-private:
-  std::unique_ptr<chaiscript::ChaiScript> mChai;
 };
 
 }// namespace core
