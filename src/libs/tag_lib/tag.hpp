@@ -2,10 +2,15 @@
 
 #include <string>
 #include <functional>
+#include <unordered_set>
 
 namespace core {
 
 class TagFactory;
+class Tag;
+struct TagHash;
+
+using TagSet = std::unordered_set<Tag, TagHash>;
 
 class Tag
 {

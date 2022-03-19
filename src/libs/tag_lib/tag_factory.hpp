@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "tag.hpp"
 #include "string_cache.hpp"
@@ -21,12 +22,18 @@ public:
     auto cachedValue = mCache.GetOrCache(value);
     auto tag = Tag(cachedName->get(), cachedValue->get());
     AddUniqueTag(name, tag);
+    AddUniqueTagName(name);
     return tag;
   }
 
   const TagMap& GetUniqueTags() const
   {
     return mUniqueTags;
+  }
+
+  const std::unordered_set<std::string>& GetUniqueTagNames() const
+  {
+    return mUniqueTagNames;
   }
 
 protected:
@@ -40,9 +47,15 @@ protected:
     findIt->second.insert(tag);
   }
 
+  void AddUniqueTagName(const std::string& name)
+  {
+    mUniqueTagNames.insert(name);
+  }
+
 private:
   StringCache mCache;
   TagMap mUniqueTags;
+  std::unordered_set<std::string> mUniqueTagNames;
 };
 
 }// namespace core
