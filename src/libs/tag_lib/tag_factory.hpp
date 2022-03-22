@@ -14,7 +14,7 @@ class TagFactory
 public:
   using TagMap = std::unordered_map<std::string, std::unordered_set<Tag, TagHash>>;
   TagFactory() = default;
-  
+
   // Adding in nodiscard to make sure tags are not accidentally created and just fill up the cache.
   [[nodiscard]] Tag CreateTag(const std::string& name, const std::string& value)
   {
