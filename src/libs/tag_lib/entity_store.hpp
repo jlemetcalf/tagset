@@ -16,7 +16,7 @@ template<typename TEntityIdType>
 class EntityStore
 {
 public:
-  EntityStore(TagFactory& tagFactory) : mTagFactory(tagFactory) {};
+  EntityStore(TagFactory& tagFactory) : mTagFactory(tagFactory){};
 
   void Add(TEntityIdType entityId, TagSet& tagSet)
   {
@@ -39,7 +39,7 @@ public:
     auto it = mEntities.find(entityId);
     if (it != mEntities.end())
     {
-      return std::optional<std::reference_wrapper<const TagSet>>{it->second};
+      return std::optional<std::reference_wrapper<const TagSet>>{ it->second };
     }
     return std::nullopt;
   }
@@ -102,8 +102,7 @@ public:
         if (DerivedTagMatcher::Match(mDerivedTagDefinition, *tagset))
         {
           AddTagsInternal(entityId, derivedTagSet, false);
-        }
-        else
+        } else
         {
           RemoveTagsInternal(entityId, derivedTagSet, false);
         }

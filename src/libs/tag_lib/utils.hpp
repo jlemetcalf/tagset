@@ -7,7 +7,7 @@ namespace core {
 inline core::TagSet GenerateTagSet(core::TagFactory& tagFactory, std::initializer_list<std::pair<std::string, std::string>> tagNameValuePairs)
 {
   core::TagSet tagSet;
-  for( auto tagNameValuePair : tagNameValuePairs )
+  for (auto tagNameValuePair : tagNameValuePairs)
   {
     auto tag = tagFactory.CreateTag(tagNameValuePair.first, tagNameValuePair.second);
     tagSet.insert(tag);
@@ -15,4 +15,4 @@ inline core::TagSet GenerateTagSet(core::TagFactory& tagFactory, std::initialize
   return tagSet;
 }
 
-} // namespace core
+}// namespace core
