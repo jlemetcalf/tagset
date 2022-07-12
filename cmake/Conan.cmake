@@ -21,6 +21,7 @@ macro(run_conan)
     fmt/6.2.0
     spdlog/1.5.0
     benchmark/1.6.0
+    abseil/20211102.0
     OPTIONS
     ${CONAN_EXTRA_OPTIONS}
     BASIC_SETUP
