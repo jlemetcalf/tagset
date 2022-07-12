@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "absl/container/flat_hash_map.h"
+
 #include "tag.hpp"
 #include "string_cache.hpp"
 
@@ -12,7 +14,7 @@ namespace core {
 class TagFactory
 {
 public:
-  using TagMap = std::unordered_map<std::string, std::unordered_set<Tag, TagHash>>;
+  using TagMap = absl::flat_hash_map<std::string, std::unordered_set<Tag, TagHash>>;
   TagFactory() = default;
 
   // Adding in nodiscard to make sure tags are not accidentally created and just fill up the cache.

@@ -5,6 +5,8 @@
 #include <functional>
 #include <string>
 
+#include "absl/container/flat_hash_map.h"
+
 #include "tag.hpp"
 #include "derived_tag_definition.hpp"
 #include "tag_factory.hpp"
@@ -142,8 +144,8 @@ protected:
 
 private:
   TagFactory& mTagFactory;
-  std::unordered_map<TEntityIdType, TagSet> mEntities;
-  std::unordered_map<std::string, DerivedTagDefinition> mDerivedTagDefinitions;
+  absl::flat_hash_map<TEntityIdType, TagSet> mEntities;
+  absl::flat_hash_map<std::string, DerivedTagDefinition> mDerivedTagDefinitions;
 };
 
 }// namespace core

@@ -22,6 +22,9 @@ add_library(project_warnings INTERFACE)
 # enable cache system
 include(cmake/Cache.cmake)
 
+# optimisations
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 # standard compiler warnings
 include(cmake/CompilerWarnings.cmake)
 set_project_warnings(project_warnings)

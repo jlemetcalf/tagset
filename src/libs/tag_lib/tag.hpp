@@ -4,13 +4,15 @@
 #include <functional>
 #include <unordered_set>
 
+#include "absl/container/flat_hash_set.h"
+
 namespace core {
 
 class TagFactory;
 class Tag;
 struct TagHash;
 
-using TagSet = std::unordered_set<Tag, TagHash>;
+using TagSet = absl::flat_hash_set<Tag, TagHash>;
 
 class Tag
 {

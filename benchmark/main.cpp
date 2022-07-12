@@ -12,41 +12,45 @@
 #include "tag_factory.hpp"
 #include "utils.hpp"
 
-std::string gen_random(const std::size_t len) 
+std::string gen_random(const std::size_t len)
 {
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-    std::string tmp_s;
-    tmp_s.reserve(len);
+  static const char alphanum[] =
+    "0123456789"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz";
+  std::string tmp_s;
+  tmp_s.reserve(len);
 
-    for (std::size_t i = 0; i < len; ++i) {
-        tmp_s += alphanum[(std::size_t)rand() % (sizeof(alphanum) - 1)];
-    }
-    
-    return tmp_s;
+  for (std::size_t i = 0; i < len; ++i)
+  {
+    tmp_s += alphanum[(std::size_t)rand() % (sizeof(alphanum) - 1)];
+  }
+
+  return tmp_s;
 }
 
-class EntityStoreFixture : public benchmark::Fixture 
+class EntityStoreFixture : public benchmark::Fixture
 {
 public:
   void SetUp(const ::benchmark::State& /*state*/) override
   {
     mTagFactory = std::make_unique<core::TagFactory>();
     mStore = std::make_unique<core::EntityStore<u_int64_t>>(*mTagFactory.get());
-    u_int64_t count = 100000;
-    std::size_t tags = 10;
+    GenerateTags(100000, 10);
+  }
+
+  void GenerateTags(u_int64_t count, const std::size_t tags)
+  {
     while (count > 0)
     {
-        core::TagSet tagSet;
-        for (std::size_t idx = 0; idx < tags; idx++)
-        {
-          auto tag1 = mTagFactory->CreateTag(std::string("Tag") + gen_random(20), std::string("Value") + gen_random(20));
-          tagSet.insert(tag1);
-        }
-        mStore->Add(count, tagSet );
-        count--;
+      core::TagSet tagSet;
+      for (std::size_t idx = 0; idx < tags; idx++)
+      {
+        auto tag1 = mTagFactory->CreateTag(std::string("Tag") + gen_random(20), std::string("Value") + gen_random(20));
+        tagSet.insert(tag1);
+      }
+      mStore->Add(count, tagSet);
+      count--;
     }
   }
 
@@ -58,9 +62,10 @@ public:
   std::unique_ptr<core::EntityStore<u_int64_t>> mStore;
 };
 
-BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state) 
+BENCHMARK_F(EntityStoreFixture, LookupTest)
+(benchmark::State& state)
 {
-  for (auto _ : state) 
+  for (auto _ : state)
   {
     // This code gets timed
     const auto storedTagSetOptional = mStore->GetTags(1);
@@ -69,31 +74,69 @@ BENCHMARK_F(EntityStoreFixture, LookupTest)(benchmark::State& state)
   }
 }
 
-BENCHMARK_F(EntityStoreFixture, FindEntitiesTest)(benchmark::State& state) 
+BENCHMARK_F(EntityStoreFixture, FindEntitiesTest)
+(benchmark::State& state)
 {
   const auto tags = mStore->GetTags(1);
-  for (auto _ : state) 
+  for (auto _ : state)
   {
     // This code gets timed
     const auto entities1 = mStore->FindEntities(tags->get());
   }
 }
 
-BENCHMARK_F(EntityStoreFixture, DerivedTagGenerationTest)(benchmark::State& state) 
+BENCHMARK_F(EntityStoreFixture, DerivedTagGenerationTest)
+(benchmark::State& state)
 {
   const auto tagSetOptional = mStore->GetTags(1);
   const auto& tagSet = tagSetOptional->get();
   const auto firstTagName = tagSet.begin()->Name();
   const auto firstTagValue = tagSet.begin()->Value();
-  const auto includedTagSet = core::GenerateTagSet(*mTagFactory, {{firstTagName, firstTagValue}});
+  const auto includedTagSet = core::GenerateTagSet(*mTagFactory, { { firstTagName, firstTagValue } });
   core::TagSet derivedTagSet;
   auto tagThatHasBeenDerived = mTagFactory->CreateTag("DerivedTagName1", "DerivedTagValue1");
   derivedTagSet.insert(tagThatHasBeenDerived);
-  for (auto _ : state) 
+  for (auto _ : state)
   {
     // This code gets timed
-    core::DerivedTagDefinition derivedTagDefinition{"DerivedTagName1", "DerivedTagValue1", includedTagSet, {}};
+    core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", includedTagSet, {} };
     mStore->AddDerivedTagDefinition(std::move(derivedTagDefinition));
+  }
+}
+
+BENCHMARK_F(EntityStoreFixture, Generate1000Entities10Tags)
+(benchmark::State& state)
+{
+  // Generate random tags and values upfront
+  const u_int64_t count = 1000;
+  const std::size_t numTags = 10;
+  std::vector<std::vector<std::string>> generatedTags;
+  std::vector<std::vector<std::string>> generatedValues;
+  for (std::size_t entityIdx = 0; entityIdx < count; entityIdx++)
+  {
+    std::vector<std::string> tags;
+    std::vector<std::string> values;
+    for (std::size_t tagIdx = 0; tagIdx < numTags; tagIdx++)
+    {
+      tags.emplace_back(gen_random(20));
+      values.emplace_back(gen_random(20));
+    }
+    generatedTags.emplace_back(std::move(tags));
+    generatedValues.emplace_back(std::move(values));
+  }
+  for (auto _ : state)
+  {
+    // This code gets timed
+    for (std::size_t entityIdx = 0; entityIdx < count; entityIdx++)
+    {
+      core::TagSet tagSet;
+      for (std::size_t tagIdx = 0; tagIdx < numTags; tagIdx++)
+      {
+        auto tag1 = mTagFactory->CreateTag(std::string("Tag") + generatedTags[entityIdx][tagIdx], std::string("Value") + generatedValues[entityIdx][tagIdx]);
+        tagSet.insert(tag1);
+      }
+      mStore->Add(count, tagSet);
+    }
   }
 }
 
