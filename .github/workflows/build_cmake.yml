@@ -74,5 +74,5 @@ jobs:
     - uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        working-directory: ${{runner.workspace}}/build
+        directory: ${{runner.workspace}}/build
         gcov: true
