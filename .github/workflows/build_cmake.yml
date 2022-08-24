@@ -44,9 +44,9 @@ jobs:
         python3 -m pip install conan
         source ~/.profile
 
-    - name: Install gcov
+    - name: Install gcovr
       shell: bash
-      run: sudo apt install gcov
+      run: sudo apt install gcovr
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
