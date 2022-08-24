@@ -84,4 +84,4 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: ${{runner.workspace}}/build
-        files: ./coverage.xml
+        gcov: true
