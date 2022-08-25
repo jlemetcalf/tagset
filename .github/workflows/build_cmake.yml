@@ -84,10 +84,10 @@ jobs:
       shell: bash
       run: find . -name *.gcda -print
 
-    - name: Coverage
+    - name: Coverage Gcovr
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: gcovr -j ${{env.nproc}} --delete --root . --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov'
+      run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov' -v
 
     # - uses: codecov/codecov-action@v3
     #   with:
