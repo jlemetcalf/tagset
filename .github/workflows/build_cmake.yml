@@ -89,6 +89,11 @@ jobs:
       shell: bash
       run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov' -v
 
+    - name: Check coverage.xml produced
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: find . -name coverage.xml -print
+
     - uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
