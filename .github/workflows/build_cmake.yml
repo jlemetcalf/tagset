@@ -98,7 +98,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: ${{runner.workspace}}/build
-        files: ./coverage.xml
+        files: ${{runner.workspace}}/build/coverage.xml
         verbose: true
 
     # - name: Coverage
