@@ -84,16 +84,17 @@ jobs:
       shell: bash
       run: find . -name *.gcda -print
 
-    # - name: Coverage Gcovr
-    #   working-directory: ${{runner.workspace}}/build
-    #   shell: bash
-    #   run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov' -v
+    - name: Generate Coverage Report
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov' -v
 
     - uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: ${{runner.workspace}}/build
-        gcov: true
+        files: ./coverage.xml
+        verbose: true
 
     # - name: Coverage
     #   working-directory: ${{runner.workspace}}
