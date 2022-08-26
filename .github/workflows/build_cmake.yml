@@ -78,7 +78,7 @@ jobs:
     - name: Generate Coverage Report
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov'
+      run: gcovr -j ${{env.nproc}} --delete --root ${{runner.workspace}} --print-summary --xml-pretty --xml coverage.xml . --gcov-executable 'gcov' --exclude-throw-branches
 
     - uses: codecov/codecov-action@v3
       with:
