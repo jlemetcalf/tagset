@@ -12,7 +12,7 @@
 #include "tag_factory.hpp"
 #include "derived_tag_matcher.hpp"
 
-namespace core {
+namespace tagset {
 
 template<typename TEntityIdType>
 class EntityStore
@@ -65,7 +65,7 @@ public:
   void AddDerivedTagDefinition(DerivedTagDefinition&& derivedTagDefinition)
   {
     auto tag = mTagFactory.CreateTag(derivedTagDefinition.Name(), derivedTagDefinition.Value());
-    core::TagSet tagSet;
+    TagSet tagSet;
     tagSet.insert(tag);
     std::for_each(mEntities.begin(), mEntities.end(), [&](auto& entityPair) {
       if (DerivedTagMatcher::Match(derivedTagDefinition, entityPair.second))
@@ -82,7 +82,7 @@ public:
     if (derivedTagIt != mDerivedTagDefinitions.end())
     {
       auto tag = mTagFactory.CreateTag(derivedTagIt->second.Name(), derivedTagIt->second.Value());
-      core::TagSet tagSet;
+      TagSet tagSet;
       tagSet.insert(tag);
       std::for_each(mEntities.begin(), mEntities.end(), [&](auto& entityPair) {
         RemoveTagsInternal(entityPair.first, tagSet, false);
@@ -99,7 +99,7 @@ public:
       std::for_each(mDerivedTagDefinitions.begin(), mDerivedTagDefinitions.end(), [&](const auto& derivedTagPair) {
         const auto& mDerivedTagDefinition = derivedTagPair.second;
         auto tag = mTagFactory.CreateTag(mDerivedTagDefinition.Name(), mDerivedTagDefinition.Value());
-        core::TagSet derivedTagSet;
+        TagSet derivedTagSet;
         derivedTagSet.insert(tag);
         if (DerivedTagMatcher::Match(mDerivedTagDefinition, *tagset))
         {
@@ -148,4 +148,4 @@ private:
   absl::flat_hash_map<std::string, DerivedTagDefinition> mDerivedTagDefinitions;
 };
 
-}// namespace core
+}// namespace tagset

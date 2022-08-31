@@ -8,7 +8,7 @@
 
 TEST_CASE("Tag Simple Test")
 {
-  core::TagFactory factory;
+  tagset::TagFactory factory;
 
   auto one = factory.CreateTag("Name1", "Value1");
   auto two = factory.CreateTag("Name2", "Value2");
@@ -24,9 +24,9 @@ TEST_CASE("Tag Simple Test")
 
 TEST_CASE("Tag Large Test")
 {
-  core::TagFactory factory;
+  tagset::TagFactory factory;
 
-  std::vector<core::Tag> tags;
+  std::vector<tagset::Tag> tags;
   std::vector<std::pair<std::string, std::string>> randomTagStrings;
   std::srand((unsigned int)std::time(nullptr));// use current time as seed for random generator
   const auto max = 1000;

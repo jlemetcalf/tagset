@@ -8,7 +8,7 @@
 
 TEST_CASE("StringCache Simple Load")
 {
-  core::StringCache cache;
+  tagset::StringCache cache;
 
   auto one = cache.GetOrCache("One");
   auto two = cache.GetOrCache("Two");
@@ -21,10 +21,10 @@ TEST_CASE("StringCache Simple Load")
 
 TEST_CASE("StringCache Large Load")
 {
-  core::StringCache cache;
+  tagset::StringCache cache;
 
   std::vector<std::string> randomStrings;
-  std::srand((unsigned int) std::time(nullptr)); // use current time as seed for random generator
+  std::srand((unsigned int)std::time(nullptr));// use current time as seed for random generator
   auto count = 1000;
   while (count > 0)
   {
@@ -38,6 +38,6 @@ TEST_CASE("StringCache Large Load")
   for (const auto& str : randomStrings)
   {
     auto cachedStr = cache.GetOrCache(str);
-    REQUIRE(str == cachedStr->get());  
+    REQUIRE(str == cachedStr->get());
   }
 }

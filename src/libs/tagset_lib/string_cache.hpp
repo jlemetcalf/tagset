@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-namespace core {
+namespace tagset {
 
 class StringCache
 {
@@ -21,4 +21,4 @@ private:
   std::unordered_set<std::string> mStrings;
 };
 
-}// namespace core
+}// namespace tagset

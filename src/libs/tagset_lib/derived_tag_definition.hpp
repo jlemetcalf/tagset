@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace core {
+namespace tagset {
 
 class DerivedTagDefinition
 {
@@ -28,4 +28,4 @@ private:
   TagSet mExcludedTags;
 };
 
-}// namespace core
+}// namespace tagset
