@@ -28,7 +28,7 @@ TEST_CASE("Tag Large Test")
 
   std::vector<core::Tag> tags;
   std::vector<std::pair<std::string, std::string>> randomTagStrings;
-  std::srand((unsigned int) std::time(nullptr)); // use current time as seed for random generator
+  std::srand((unsigned int)std::time(nullptr));// use current time as seed for random generator
   const auto max = 1000;
   auto count = max;
   while (count > 0)
