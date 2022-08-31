@@ -34,8 +34,8 @@ class EntityStoreFixture : public benchmark::Fixture
 public:
   void SetUp(const ::benchmark::State& /*state*/) override
   {
-    mTagFactory = std::make_unique<core::TagFactory>();
-    mStore = std::make_unique<core::EntityStore<u_int64_t>>(*mTagFactory.get());
+    mTagFactory = std::make_unique<tagset::TagFactory>();
+    mStore = std::make_unique<tagset::EntityStore<u_int64_t>>(*mTagFactory.get());
     GenerateTags(100000, 10);
   }
 
@@ -43,7 +43,7 @@ public:
   {
     while (count > 0)
     {
-      core::TagSet tagSet;
+      tagset::TagSet tagSet;
       for (std::size_t idx = 0; idx < tags; idx++)
       {
         auto tag1 = mTagFactory->CreateTag(std::string("Tag") + gen_random(20), std::string("Value") + gen_random(20));
@@ -58,8 +58,8 @@ public:
   {
   }
 
-  std::unique_ptr<core::TagFactory> mTagFactory;
-  std::unique_ptr<core::EntityStore<u_int64_t>> mStore;
+  std::unique_ptr<tagset::TagFactory> mTagFactory;
+  std::unique_ptr<tagset::EntityStore<u_int64_t>> mStore;
 };
 
 BENCHMARK_F(EntityStoreFixture, LookupTest)
@@ -92,14 +92,14 @@ BENCHMARK_F(EntityStoreFixture, DerivedTagGenerationTest)
   const auto& tagSet = tagSetOptional->get();
   const auto firstTagName = tagSet.begin()->Name();
   const auto firstTagValue = tagSet.begin()->Value();
-  const auto includedTagSet = core::GenerateTagSet(*mTagFactory, { { firstTagName, firstTagValue } });
-  core::TagSet derivedTagSet;
+  const auto includedTagSet = tagset::GenerateTagSet(*mTagFactory, { { firstTagName, firstTagValue } });
+  tagset::TagSet derivedTagSet;
   auto tagThatHasBeenDerived = mTagFactory->CreateTag("DerivedTagName1", "DerivedTagValue1");
   derivedTagSet.insert(tagThatHasBeenDerived);
   for (auto _ : state)
   {
     // This code gets timed
-    core::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", includedTagSet, {} };
+    tagset::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", includedTagSet, {} };
     mStore->AddDerivedTagDefinition(std::move(derivedTagDefinition));
   }
 }
@@ -129,7 +129,7 @@ BENCHMARK_F(EntityStoreFixture, Generate1000Entities10Tags)
     // This code gets timed
     for (std::size_t entityIdx = 0; entityIdx < count; entityIdx++)
     {
-      core::TagSet tagSet;
+      tagset::TagSet tagSet;
       for (std::size_t tagIdx = 0; tagIdx < numTags; tagIdx++)
       {
         auto tag1 = mTagFactory->CreateTag(std::string("Tag") + generatedTags[entityIdx][tagIdx], std::string("Value") + generatedValues[entityIdx][tagIdx]);

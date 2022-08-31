@@ -8,7 +8,7 @@
 #include "tag.hpp"
 #include "derived_tag_definition.hpp"
 
-namespace core {
+namespace tagset {
 
 class DerivedTagMatcher
 {
@@ -18,15 +18,15 @@ public:
   static bool Match(const DerivedTagDefinition& derivedTagDefinition, const TagSet& tagset)
   {
     const auto& includedTags = derivedTagDefinition.IncludedTags();
-    const bool foundAllIncludedTags = std::all_of(includedTags.begin(), includedTags.end(), [&tagset](const auto tag){
+    const bool foundAllIncludedTags = std::all_of(includedTags.begin(), includedTags.end(), [&tagset](const auto tag) {
       return tagset.find(tag) != tagset.end();
     });
     const auto& excludedTags = derivedTagDefinition.ExcludedTags();
-    const bool foundAnyExcludedTags = std::any_of(excludedTags.begin(), excludedTags.end(), [&tagset](const auto tag){
+    const bool foundAnyExcludedTags = std::any_of(excludedTags.begin(), excludedTags.end(), [&tagset](const auto tag) {
       return tagset.find(tag) != tagset.end();
     });
     return foundAllIncludedTags && !foundAnyExcludedTags;
   }
 };
 
-}// namespace core
+}// namespace tagset

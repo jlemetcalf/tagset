@@ -2,11 +2,11 @@
 
 #include "tag_factory.hpp"
 
-namespace core {
+namespace tagset {
 
-inline core::TagSet GenerateTagSet(core::TagFactory& tagFactory, std::initializer_list<std::pair<std::string, std::string>> tagNameValuePairs)
+inline TagSet GenerateTagSet(TagFactory& tagFactory, std::initializer_list<std::pair<std::string, std::string>> tagNameValuePairs)
 {
-  core::TagSet tagSet;
+  TagSet tagSet;
   for (auto tagNameValuePair : tagNameValuePairs)
   {
     auto tag = tagFactory.CreateTag(tagNameValuePair.first, tagNameValuePair.second);
@@ -15,4 +15,4 @@ inline core::TagSet GenerateTagSet(core::TagFactory& tagFactory, std::initialize
   return tagSet;
 }
 
-}// namespace core
+}// namespace tagset

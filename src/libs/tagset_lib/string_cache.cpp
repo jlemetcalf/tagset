@@ -1,6 +1,6 @@
 #include "string_cache.hpp"
 
-using namespace core;
+using namespace tagset;
 
 std::optional<std::reference_wrapper<const std::string>> StringCache::Cache(const std::string& str)
 {

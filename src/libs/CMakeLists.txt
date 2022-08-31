@@ -1,1 +1,1 @@
-add_subdirectory(tag_lib)
+add_subdirectory(tagset_lib)

@@ -9,7 +9,7 @@
 #include "tag.hpp"
 #include "string_cache.hpp"
 
-namespace core {
+namespace tagset {
 
 class TagFactory
 {
@@ -60,4 +60,4 @@ private:
   std::unordered_set<std::string> mUniqueTagNames;
 };
 
-}// namespace core
+}// namespace tagset

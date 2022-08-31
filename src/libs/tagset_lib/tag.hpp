@@ -6,7 +6,7 @@
 
 #include "absl/container/flat_hash_set.h"
 
-namespace core {
+namespace tagset {
 
 class TagFactory;
 class Tag;
@@ -50,4 +50,4 @@ struct TagHash
   }
 };
 
-}// namespace core
+}// namespace tagset
