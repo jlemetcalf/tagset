@@ -1,0 +1,11 @@
+[requires]
+catch2/3.9.1
+docopt.cpp/0.6.3
+fmt/11.2.0
+spdlog/1.15.3
+benchmark/1.9.4
+abseil/20250127.0
+
+[generators]
+CMakeDeps
+CMakeToolchain

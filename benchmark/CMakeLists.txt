@@ -1,6 +1,7 @@
-#add_library(benchmark_main STATIC main.cpp)
-#target_link_libraries(benchmark_main PUBLIC CONAN_PKG::benchmark)
+find_package(benchmark REQUIRED)
+find_package(fmt REQUIRED)
+find_package(absl REQUIRED)
 
 file(GLOB_RECURSE _SRC "*.cpp")
 add_executable(benchmark ${_SRC})
-target_link_libraries(benchmark PRIVATE project_options project_warnings CONAN_PKG::fmt CONAN_PKG::benchmark CONAN_PKG::abseil tagset_lib)
+target_link_libraries(benchmark PRIVATE project_options project_warnings fmt::fmt benchmark::benchmark_main abseil::abseil tagset_lib)
