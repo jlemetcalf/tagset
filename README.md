@@ -36,3 +36,10 @@ It is also possible to create derived tags:
   const auto excludedTagSet = tagset::GenerateTagSet(tagFactory, { { "TagName1", "TagValue" } });
   tagset::DerivedTagDefinition derivedTagDefinition{ "DerivedTagName1", "DerivedTagValue1", includedTagSet, excludedTagSet };
   store.AddDerivedTagDefinition(std::move(derivedTagDefinition));
+
+## Build
+
+```
+  conan profile detect --force
+  conan install . --output-folder=../build --build=missing
+  make --build ../build --config Release --target all --

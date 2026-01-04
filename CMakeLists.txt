@@ -60,12 +60,10 @@ if(ENABLE_PCH)
     <utility>)
 endif()
 
-# Set up some extra Conan dependencies based on our needs before loading Conan
-set(CONAN_EXTRA_REQUIRES "")
-set(CONAN_EXTRA_OPTIONS "")
-
-include(cmake/Conan.cmake)
-run_conan()
+# Conan
+if(EXISTS "${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
+    include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
+endif()
 
 if(ENABLE_TESTING)
   enable_testing()
