@@ -60,6 +60,8 @@ jobs:
       # We need to source the profile file to make sure conan is in PATH
       run: |
         source ~/.profile
+        conan profile detect --force
+        conan install $GITHUB_WORKSPACE --output-folder=${{runner.workspace}}/build --build=missing
         cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -D ENABLE_COVERAGE:BOOL=TRUE
 
     - name: Build
