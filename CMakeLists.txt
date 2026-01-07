@@ -63,6 +63,7 @@ endif()
 # Conan
 if(EXISTS "${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
     include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
+    cmake_print_variables(CMAKE_INCLUDE_PATH)
 endif()
 
 if(ENABLE_TESTING)
