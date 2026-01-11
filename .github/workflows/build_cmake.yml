@@ -22,27 +22,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache
-      uses: actions/cache@v4
-      env:
-        cache-name: cache-conan-modules
-      with:
-        path: |
-          ${{ env.CONAN_USER_HOME }}
-          ~/.cache/pip
-        key: ${{ runner.os }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ hashFiles('cmake/Conan.cmake') }}
-
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Install conan
-      shell: bash
-      run: |
-        python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install conan
-        source ~/.profile
+    - name: Install Conan
+      uses: conan-io/setup-conan@v2
+
+    - name: Create default Conan profile
+      run: conan profile detect --force
+
+    - name: Install dependencies
+      run: conan install $GITHUB_WORKSPACE --output-folder=${{runner.workspace}}/build --build=missing
 
     - name: Install gcovr
       shell: bash
@@ -60,8 +52,6 @@ jobs:
       # We need to source the profile file to make sure conan is in PATH
       run: |
         source ~/.profile
-        conan profile detect --force
-        conan install $GITHUB_WORKSPACE --output-folder=${{runner.workspace}}/build --build=missing
         cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -D ENABLE_COVERAGE:BOOL=TRUE
 
     - name: Build
